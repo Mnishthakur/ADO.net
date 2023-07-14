@@ -7,7 +7,7 @@ class Program
     static void Main()
     {
         // Connection string for your database
-        string connectionString = "customer";
+        string connectionString = "Customer";
 
         // Create a new SqlConnection using the connection string
         using (SqlConnection connection = new SqlConnection(connectionString))
@@ -15,18 +15,22 @@ class Program
             // Open the database connection
             connection.Open();
 
-            // Prompt user for the customer ID to delete
-            Console.Write("Enter the customer ID to delete: ");
-            int customerIdToDelete = Convert.ToInt32(Console.ReadLine());
+            // Prompt user for the customer name and new salary
+            Console.Write("Enter the customer name: ");
+            string customerName = Console.ReadLine();
+            
+            Console.Write("Enter the new salary: ");
+            decimal newSalary = Convert.ToDecimal(Console.ReadLine());
 
-            // Create a new SqlCommand for deleting the customer
+            // Create a new SqlCommand for updating the customer's salary
             using (SqlCommand command = connection.CreateCommand())
             {
                 // Set the SQL query
-                command.CommandText = "DELETE FROM Customer WHERE customer_id = @CustomerIdToDelete";
+                command.CommandText = "UPDATE Customer SET salary = @NewSalary WHERE name = @CustomerName";
 
-                // Set the parameter value for the customer ID
-                command.Parameters.AddWithValue("@CustomerIdToDelete", customerIdToDelete);
+                // Set the parameter values for the query
+                command.Parameters.AddWithValue("@NewSalary", newSalary);
+                command.Parameters.AddWithValue("@CustomerName", customerName);
 
                 // Execute the SQL query
                 int rowsAffected = command.ExecuteNonQuery();
@@ -34,13 +38,14 @@ class Program
                 // Check if any rows were affected
                 if (rowsAffected > 0)
                 {
-                    Console.WriteLine("Customer deleted successfully.");
+                    Console.WriteLine("Customer salary updated successfully.");
                 }
                 else
                 {
-                    Console.WriteLine("No customer found with the specified ID.");
+                    Console.WriteLine("No customer found with the specified name.");
                 }
             }
         }
     }
 }
+
